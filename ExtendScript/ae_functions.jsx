@@ -31,7 +31,7 @@ function getActiveComp() {
 
 // --- Shape Oluşturma ---
 
-function createShapeLayer(comp, shapeType, width, height, fillColor, strokeColor, strokeWidth, cornerRadius, gradientType, gradientColor1, gradientColor2, gradientAngle) {
+function createShapeLayer(comp, shapeType, width, height, fillColor, strokeColor, strokeWidth, cornerRadius) {
     var shapeLayer = comp.layers.addShape();
     shapeLayer.name = "Shape_" + (comp.numLayers);
     
@@ -115,44 +115,15 @@ function createShapeLayer(comp, shapeType, width, height, fillColor, strokeColor
         shapePath.property("ADBE Vector Rect Roundness").setValue(cr);
     }
     
-    // --- FILL ---
-    // Gradient veya düz renk (güvenli kontrollerle)
+    // --- FILL (her zaman düz renk) ---
+    var fill = groupContents.addProperty("ADBE Vector Graphic - Fill");
+    var rgb = hexToRGB(fillColor || "#4A90D9");
     try {
-        if (gradientType && (gradientType === "linear" || gradientType === "radial") && gradientColor1 && gradientColor2) {
-            var gradFill = groupContents.addProperty("ADBE Vector Graphic - G-Fill");
-            gradFill.property("ADBE Vector Grad Type").setValue(gradientType === "linear" ? 1 : 2);
-            
-            var gc1 = hexToRGB(gradientColor1 || fillColor || "#4A90D9");
-            var gc2 = hexToRGB(gradientColor2 || "#1A365D");
-            gradFill.property("ADBE Vector Grad Colors").setValue([gc1, gc2]);
-            
-            var angle = gradientAngle || 0;
-            gradFill.property("ADBE Vector Grad Angle").setValue(angle);
-            gradFill.property("ADBE Vector Graphic Opacity").setValue(100);
-            
-            var halfW = width / 2;
-            var halfH = height / 2;
-            gradFill.property("ADBE Vector Grad Start Pt").setValue([-halfW, 0]);
-            gradFill.property("ADBE Vector Grad End Pt").setValue([halfW, 0]);
-        } else {
-            var fill = groupContents.addProperty("ADBE Vector Graphic - Fill");
-            var rgb = hexToRGB(fillColor || "#4A90D9");
-            fill.property("ADBE Vector Fill Color").setValue(rgb);
-            fill.property("ADBE Vector Graphic Opacity").setValue(100);
-        }
-    } catch (fillErr) {
-        // Gradient başarısız olursa düz renk dene
-        try {
-            var fill = groupContents.addProperty("ADBE Vector Graphic - Fill");
-            var rgb = hexToRGB(fillColor || "#4A90D9");
-            fill.property("ADBE Vector Fill Color").setValue(rgb);
-            fill.property("ADBE Vector Graphic Opacity").setValue(100);
-        } catch (e2) {
-            // Display name ile dene
-            var fill = groupContents.addProperty("ADBE Vector Graphic - Fill");
-            fill.property("Color").setValue(rgb);
-            fill.property("Opacity").setValue(100);
-        }
+        fill.property("ADBE Vector Fill Color").setValue(rgb);
+        fill.property("ADBE Vector Graphic Opacity").setValue(100);
+    } catch (fe) {
+        fill.property("Color").setValue(rgb);
+        fill.property("Opacity").setValue(100);
     }
     
     // --- STROKE ---
@@ -230,10 +201,6 @@ function createSingleShape(params) {
     var strokeColor = params.strokeColor || "#ffffff";
     var strokeWidth = params.strokeWidth || 1;
     var cornerRadius = parseInt(params.cornerRadius) || 8;
-    var gradientType = params.gradientType || null;
-    var gradientColor1 = params.gradientColor1 || null;
-    var gradientColor2 = params.gradientColor2 || null;
-    var gradientAngle = parseInt(params.gradientAngle) || 0;
     
     // Pozisyon: kompozisyonun ortası
     var posX = params.posX !== undefined ? parseFloat(params.posX) : comp.width / 2;
@@ -241,7 +208,7 @@ function createSingleShape(params) {
     
     app.beginUndoGroup("Shape Animator - Tek Shape");
     
-    var layer = createShapeLayer(comp, shapeType, shapeWidth, shapeHeight, fillColor, strokeColor, strokeWidth, cornerRadius, gradientType, gradientColor1, gradientColor2, gradientAngle);
+    var layer = createShapeLayer(comp, shapeType, shapeWidth, shapeHeight, fillColor, strokeColor, strokeWidth, cornerRadius);
     layer.property("Position").setValue([posX, posY]);
     
     // Oluşturulan layer'ı seç (görünürlük için)
@@ -300,7 +267,7 @@ function createShapeGrid(params) {
             var x = startX + c * (shapeWidth + gapX) + (Math.random() - 0.5) * posRandom * 2;
             var y = startY + r * (shapeHeight + gapY) + (Math.random() - 0.5) * posRandom * 2;
             
-            var layer = createShapeLayer(comp, shapeType, w, h, fillColor, strokeColor, strokeWidth, cornerRadius, gradientType, gradientColor1, gradientColor2, gradientAngle);
+            var layer = createShapeLayer(comp, shapeType, w, h, fillColor, strokeColor, strokeWidth, cornerRadius);
             layer.property("Position").setValue([x, y]);
             
             createdLayers.push({

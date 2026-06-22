@@ -60,15 +60,6 @@ document.getElementById('posRandom').addEventListener('input', function() {
 document.getElementById('cornerRadius').addEventListener('input', function() {
     document.getElementById('cornerRadiusVal').textContent = this.value;
 });
-document.getElementById('gradientAngle').addEventListener('input', function() {
-    document.getElementById('gradientAngleVal').textContent = this.value + '°';
-});
-
-// --- Gradient toggle ---
-document.getElementById('useGradient').addEventListener('change', function() {
-    var opts = document.getElementById('gradientOpts');
-    opts.style.display = this.checked ? 'block' : 'none';
-});
 
 // --- Comp bilgisi ---
 function refreshComp() {
@@ -89,7 +80,6 @@ function refreshComp() {
 
 // --- Grid Oluştur ---
 function createGrid() {
-    var useGrad = document.getElementById('useGradient').checked;
     var params = {
         cols: parseInt(document.getElementById('gridCols').value),
         rows: parseInt(document.getElementById('gridRows').value),
@@ -103,11 +93,7 @@ function createGrid() {
         gapY: 12,
         strokeWidth: 1,
         strokeColor: '#ffffff',
-        cornerRadius: parseInt(document.getElementById('cornerRadius').value),
-        gradientType: useGrad ? document.getElementById('gradientType').value : null,
-        gradientColor1: useGrad ? document.getElementById('gradientColor1').value : null,
-        gradientColor2: useGrad ? document.getElementById('gradientColor2').value : null,
-        gradientAngle: useGrad ? parseInt(document.getElementById('gradientAngle').value) : 0
+        cornerRadius: parseInt(document.getElementById('cornerRadius').value)
     };
     
     setStatus('🔄 Grid oluşturuluyor...');
@@ -140,7 +126,6 @@ function createComp() {
 
 // --- Tek Shape Oluştur ---
 function createSingleShape() {
-    var useGrad = document.getElementById('useGradient').checked;
     var params = {
         shapeType: document.getElementById('shapeType').value,
         shapeWidth: parseInt(document.getElementById('shapeWidth').value),
@@ -148,11 +133,7 @@ function createSingleShape() {
         fillColor: document.getElementById('fillColor').value,
         strokeWidth: 4,
         strokeColor: '#FFFF00',
-        cornerRadius: parseInt(document.getElementById('cornerRadius').value),
-        gradientType: useGrad ? document.getElementById('gradientType').value : null,
-        gradientColor1: useGrad ? document.getElementById('gradientColor1').value : null,
-        gradientColor2: useGrad ? document.getElementById('gradientColor2').value : null,
-        gradientAngle: useGrad ? parseInt(document.getElementById('gradientAngle').value) : 0
+        cornerRadius: parseInt(document.getElementById('cornerRadius').value)
     };
     
     setStatus('➕ Shape oluşturuluyor...');
@@ -203,41 +184,6 @@ function autoNumber() {
     var textColor = document.getElementById('numTextColor').value || '#FFFFFF';
     var groupWithShape = document.getElementById('groupNumbers').checked;
     callAE('autoNumber', { fontSize: fontSize, textColor: textColor, groupWithShape: groupWithShape });
-}
-
-// --- Hazır Gradient Presetleri ---
-function setGradientPreset(preset) {
-    var gradCheck = document.getElementById('useGradient');
-    var gradType = document.getElementById('gradientType');
-    var gradColor1 = document.getElementById('gradientColor1');
-    var gradColor2 = document.getElementById('gradientColor2');
-    var gradAngle = document.getElementById('gradientAngle');
-    var gradAngleVal = document.getElementById('gradientAngleVal');
-    var gradOpts = document.getElementById('gradientOpts');
-    
-    gradCheck.checked = true;
-    gradOpts.style.display = 'block';
-    gradType.value = 'linear';
-    gradAngle.value = 135;
-    gradAngleVal.textContent = '135°';
-    
-    switch(preset) {
-        case 'blue-white':
-            gradColor1.value = '#3498DB';
-            gradColor2.value = '#FFFFFF';
-            setStatus('💧 Mavi-Beyaz 3D gradient seçildi', '');
-            break;
-        case 'red-white':
-            gradColor1.value = '#E74C3C';
-            gradColor2.value = '#FFFFFF';
-            setStatus('🔥 Kırmızı-Beyaz 3D gradient seçildi', '');
-            break;
-        case 'green-white':
-            gradColor1.value = '#2ECC71';
-            gradColor2.value = '#FFFFFF';
-            setStatus('🍀 Yeşil-Beyaz 3D gradient seçildi', '');
-            break;
-    }
 }
 
 // --- Temizle ---
