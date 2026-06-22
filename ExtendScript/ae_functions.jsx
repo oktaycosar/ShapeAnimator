@@ -247,10 +247,7 @@ function createShapeGrid(params) {
     var cornerRadius = params.cornerRadius || 8;
     var sizeRandom = params.sizeRandom || 0;
     var posRandom = params.posRandom || 0;
-    var gradientType = params.gradientType || null;
-    var gradientColor1 = params.gradientColor1 || null;
-    var gradientColor2 = params.gradientColor2 || null;
-    var gradientAngle = params.gradientAngle || 0;
+    var secColor = params.secColor || null;
     
     var totalWidth = cols * shapeWidth + (cols - 1) * gapX;
     var totalHeight = rows * shapeHeight + (rows - 1) * gapY;
@@ -258,6 +255,7 @@ function createShapeGrid(params) {
     var startY = (comp.height - totalHeight) / 2 + shapeHeight / 2;
     
     var createdLayers = [];
+    var colorIndex = 0;
     
     for (var r = 0; r < rows; r++) {
         for (var c = 0; c < cols; c++) {
@@ -267,8 +265,10 @@ function createShapeGrid(params) {
             var x = startX + c * (shapeWidth + gapX) + (Math.random() - 0.5) * posRandom * 2;
             var y = startY + r * (shapeHeight + gapY) + (Math.random() - 0.5) * posRandom * 2;
             
-            var layer = createShapeLayer(comp, shapeType, w, h, fillColor, strokeColor, strokeWidth, cornerRadius);
+            var useColor = (secColor && colorIndex % 2 === 1) ? secColor : fillColor;
+            var layer = createShapeLayer(comp, shapeType, w, h, useColor, strokeColor, strokeWidth, cornerRadius);
             layer.property("Position").setValue([x, y]);
+            colorIndex++;
             
             createdLayers.push({
                 index: layer.index,

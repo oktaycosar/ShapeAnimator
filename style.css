@@ -279,20 +279,25 @@ label:has(input[type="checkbox"]) {
     box-shadow: 0 0 8px rgba(255,255,255,0.3);
 }
 
-.gradient-chip {
+.dual-chip {
     width: 36px;
     height: 28px;
     border-radius: 6px;
     cursor: pointer;
-    border: 2px solid rgba(255,255,255,0.25);
+    border: 2px solid rgba(255,255,255,0.2);
     transition: all 0.15s;
     display: inline-block;
 }
 
-.gradient-chip:hover {
+.dual-chip:hover {
     border-color: #fff;
     transform: scale(1.15);
     box-shadow: 0 0 8px rgba(255,255,255,0.3);
+}
+
+.dual-chip.active {
+    border-color: #FFD700;
+    box-shadow: 0 0 10px rgba(255,215,0,0.5);
 }
 
 /* Small Buttons (4-column layout) */

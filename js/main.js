@@ -80,6 +80,8 @@ function refreshComp() {
 
 // --- Grid Oluştur ---
 function createGrid() {
+    var dualChip = document.querySelector('.dual-chip.active');
+    var secColor = dualChip ? dualChip.getAttribute('data-sec') : null;
     var params = {
         cols: parseInt(document.getElementById('gridCols').value),
         rows: parseInt(document.getElementById('gridRows').value),
@@ -87,6 +89,7 @@ function createGrid() {
         shapeWidth: parseInt(document.getElementById('shapeWidth').value),
         shapeHeight: parseInt(document.getElementById('shapeHeight').value),
         fillColor: document.getElementById('fillColor').value,
+        secColor: secColor,
         sizeRandom: parseInt(document.getElementById('sizeRandom').value),
         posRandom: parseInt(document.getElementById('posRandom').value),
         gapX: 15,
@@ -184,6 +187,21 @@ function autoNumber() {
     var textColor = document.getElementById('numTextColor').value || '#FFFFFF';
     var groupWithShape = document.getElementById('groupNumbers').checked;
     callAE('autoNumber', { fontSize: fontSize, textColor: textColor, groupWithShape: groupWithShape });
+}
+
+// --- Çift Renk Preset ---
+function setDualColor(color1, color2) {
+    document.getElementById('fillColor').value = color1;
+    document.querySelectorAll('.dual-chip').forEach(function(c) { c.classList.remove('active'); });
+    var chips = document.querySelectorAll('.dual-chip');
+    for (var i = 0; i < chips.length; i++) {
+        var bg = chips[i].style.background;
+        if (bg.indexOf(color1) !== -1 && bg.indexOf(color2) !== -1) {
+            chips[i].classList.add('active');
+            chips[i].setAttribute('data-sec', color2);
+        }
+    }
+    setStatus('🎨 Çift renk: ' + color1 + ' + ' + color2, '');
 }
 
 // --- Temizle ---
