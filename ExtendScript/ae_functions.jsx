@@ -238,8 +238,16 @@ function createShapeGrid(params) {
     var rows = params.rows || 7;
     var shapeWidth = params.shapeWidth || 80;
     var shapeHeight = params.shapeHeight || 60;
+    var autoSize = params.autoSize || false;
     var gapX = params.gapX || 15;
     var gapY = params.gapY || 15;
+    
+    // Otomatik boyut: kompozisyonu dolduracak şekilde hesapla
+    if (autoSize) {
+        shapeWidth = Math.floor((comp.width - (cols - 1) * gapX) / cols);
+        shapeHeight = Math.floor((comp.height - (rows - 1) * gapY) / rows);
+    }
+    
     var shapeType = params.shapeType || "rounded_rect";
     var fillColor = params.fillColor || "#4A90D9";
     var strokeColor = params.strokeColor || "#2C5F8A";

@@ -82,18 +82,20 @@ function refreshComp() {
 function createGrid() {
     var dualChip = document.querySelector('.dual-chip.active');
     var secColor = dualChip ? dualChip.getAttribute('data-sec') : null;
+    var autoSize = document.getElementById('autoSize').checked;
     var params = {
         cols: parseInt(document.getElementById('gridCols').value),
         rows: parseInt(document.getElementById('gridRows').value),
         shapeType: document.getElementById('shapeType').value,
-        shapeWidth: parseInt(document.getElementById('shapeWidth').value),
-        shapeHeight: parseInt(document.getElementById('shapeHeight').value),
+        shapeWidth: autoSize ? 0 : parseInt(document.getElementById('shapeWidth').value),
+        shapeHeight: autoSize ? 0 : parseInt(document.getElementById('shapeHeight').value),
+        autoSize: autoSize,
         fillColor: document.getElementById('fillColor').value,
         secColor: secColor,
         sizeRandom: parseInt(document.getElementById('sizeRandom').value),
         posRandom: parseInt(document.getElementById('posRandom').value),
-        gapX: 15,
-        gapY: 12,
+        gapX: autoSize ? 10 : 15,
+        gapY: autoSize ? 10 : 12,
         strokeWidth: 1,
         strokeColor: '#ffffff',
         cornerRadius: parseInt(document.getElementById('cornerRadius').value)
@@ -106,6 +108,20 @@ function createGrid() {
             refreshComp();
         }
     });
+}
+
+// --- Otomatik Boyut Toggle ---
+function toggleAutoSize() {
+    var auto = document.getElementById('autoSize').checked;
+    document.getElementById('shapeWidth').disabled = auto;
+    document.getElementById('shapeHeight').disabled = auto;
+    if (auto) {
+        document.getElementById('shapeWidth').style.opacity = '0.4';
+        document.getElementById('shapeHeight').style.opacity = '0.4';
+    } else {
+        document.getElementById('shapeWidth').style.opacity = '1';
+        document.getElementById('shapeHeight').style.opacity = '1';
+    }
 }
 
 // --- Kompozisyon Oluştur ---
