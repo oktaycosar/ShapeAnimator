@@ -201,7 +201,8 @@ function autoNumber() {
     setStatus('🔢 Numaralandırılıyor...');
     var fontSize = parseInt(document.getElementById('numFontSize').value) || 0;
     var textColor = document.getElementById('numTextColor').value || '#FFFFFF';
-    callAE('autoNumber', { fontSize: fontSize, textColor: textColor });
+    var groupWithShape = document.getElementById('groupNumbers').checked;
+    callAE('autoNumber', { fontSize: fontSize, textColor: textColor, groupWithShape: groupWithShape });
 }
 
 // --- Temizle ---

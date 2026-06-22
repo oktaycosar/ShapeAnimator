@@ -615,6 +615,7 @@ function autoNumber(params) {
     var fontSize = parseInt(params.fontSize) || 0;   // 0 = otomatik (shape boyutunun %60'ı)
     var textColor = params.textColor || "#FFFFFF";
     var offsetY = params.offsetY || 0;               // 0 = tam merkez
+    var groupWithShape = params.groupWithShape !== undefined ? params.groupWithShape : true; // varsayılan: grupla
     
     // 1. Önce seçili layer'ları kullan, yoksa Shape_ ile başlayanları bul
     var shapes = [];
@@ -668,7 +669,15 @@ function autoNumber(params) {
         
         var textLayer = comp.layers.addText(num.toString());
         textLayer.name = "#" + num;
-        textLayer.property("Position").setValue([pos[0], pos[1] + offsetY]);
+        
+        // NUMARA + SHAPE GRUPLAMA (Parent-Child)
+        if (groupWithShape) {
+            // Parent yapınca pozisyon relative olur - shape'in merkezine [0, offsetY]
+            textLayer.property("Position").setValue([0, offsetY]);
+            textLayer.parent = shape;
+        } else {
+            textLayer.property("Position").setValue([pos[0], pos[1] + offsetY]);
+        }
         
         // Text stilini ayarla (doğru match name ile)
         try {
@@ -705,7 +714,8 @@ function autoNumber(params) {
     return JSON.stringify({
         success: true,
         count: count,
-        message: count + " layer numaralandırıldı! (1-" + count + ")"
+        grouped: groupWithShape,
+        message: count + " layer numaralandırıldı" + (groupWithShape ? " ve gruplandı" : "") + "! (1-" + count + ")"
     });
 }
 
