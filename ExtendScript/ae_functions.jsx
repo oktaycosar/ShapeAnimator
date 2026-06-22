@@ -239,13 +239,16 @@ function createShapeGrid(params) {
     var shapeWidth = params.shapeWidth || 80;
     var shapeHeight = params.shapeHeight || 60;
     var autoSize = params.autoSize || false;
+    var fillPct = (params.fillPct || 90) / 100;  // %90 varsayılan
     var gapX = params.gapX || 15;
     var gapY = params.gapY || 15;
     
     // Otomatik boyut: kompozisyonu dolduracak şekilde hesapla
     if (autoSize) {
-        shapeWidth = Math.floor((comp.width - (cols - 1) * gapX) / cols);
-        shapeHeight = Math.floor((comp.height - (rows - 1) * gapY) / rows);
+        var availW = comp.width * fillPct;
+        var availH = comp.height * fillPct;
+        shapeWidth = Math.floor((availW - (cols - 1) * gapX) / cols);
+        shapeHeight = Math.floor((availH - (rows - 1) * gapY) / rows);
     }
     
     var shapeType = params.shapeType || "rounded_rect";

@@ -83,6 +83,7 @@ function createGrid() {
     var dualChip = document.querySelector('.dual-chip.active');
     var secColor = dualChip ? dualChip.getAttribute('data-sec') : null;
     var autoSize = document.getElementById('autoSize').checked;
+    var fillPct = autoSize ? parseInt(document.getElementById('fillPct').value) : 100;
     var params = {
         cols: parseInt(document.getElementById('gridCols').value),
         rows: parseInt(document.getElementById('gridRows').value),
@@ -90,6 +91,7 @@ function createGrid() {
         shapeWidth: autoSize ? 0 : parseInt(document.getElementById('shapeWidth').value),
         shapeHeight: autoSize ? 0 : parseInt(document.getElementById('shapeHeight').value),
         autoSize: autoSize,
+        fillPct: fillPct,
         fillColor: document.getElementById('fillColor').value,
         secColor: secColor,
         sizeRandom: parseInt(document.getElementById('sizeRandom').value),
@@ -113,8 +115,10 @@ function createGrid() {
 // --- Otomatik Boyut Toggle ---
 function toggleAutoSize() {
     var auto = document.getElementById('autoSize').checked;
+    var opts = document.getElementById('autoSizeOpts');
     document.getElementById('shapeWidth').disabled = auto;
     document.getElementById('shapeHeight').disabled = auto;
+    opts.style.display = auto ? 'block' : 'none';
     if (auto) {
         document.getElementById('shapeWidth').style.opacity = '0.4';
         document.getElementById('shapeHeight').style.opacity = '0.4';
@@ -123,6 +127,11 @@ function toggleAutoSize() {
         document.getElementById('shapeHeight').style.opacity = '1';
     }
 }
+
+// --- Doluluk slider ---
+document.getElementById('fillPct').addEventListener('input', function() {
+    document.getElementById('fillPctVal').textContent = this.value + '%';
+});
 
 // --- Kompozisyon Oluştur ---
 function createComp() {

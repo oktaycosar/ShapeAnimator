@@ -91,6 +91,11 @@
                     <input type="checkbox" id="autoSize" onchange="toggleAutoSize()"> 📐 Otomatik Boyut (kompozisyonu doldur)
                 </label>
             </div>
+            <div class="row" id="autoSizeOpts" style="display:none;">
+                <label>Doluluk</label>
+                <input type="range" id="fillPct" min="50" max="100" value="90">
+                <span class="range-val" id="fillPctVal">90%</span>
+            </div>
             <div class="row cols-2">
                 <div>
                     <label>Kolon</label>
