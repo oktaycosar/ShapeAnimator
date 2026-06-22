@@ -668,7 +668,8 @@ function autoNumber(params) {
             textDoc.fontSize = calcFontSize;
             textDoc.fillColor = textRgb;
             textDoc.justification = ParagraphJustification.CENTER_JUSTIFIED;
-            textDoc.font = "Arial-BoldMT";
+            textDoc.font = "Arial";
+            textDoc.applyFauxBold = true;     // KESİN BOLD
             // Görünürlük için ince siyah outline
             textDoc.strokeColor = [0, 0, 0];
             textDoc.strokeWidth = Math.max(1, Math.round(calcFontSize * 0.05));
@@ -681,7 +682,8 @@ function autoNumber(params) {
                 textDoc2.fontSize = calcFontSize;
                 textDoc2.fillColor = textRgb;
                 textDoc2.justification = ParagraphJustification.CENTER_JUSTIFIED;
-                textDoc2.font = "Arial-BoldMT";
+                textDoc2.font = "Arial";
+                textDoc2.applyFauxBold = true;     // KESİN BOLD
                 textDoc2.strokeColor = [0, 0, 0];
                 textDoc2.strokeWidth = Math.max(1, Math.round(calcFontSize * 0.05));
                 textProp2.setValue(textDoc2);
