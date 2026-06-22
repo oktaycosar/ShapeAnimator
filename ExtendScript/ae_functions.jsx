@@ -141,8 +141,8 @@ function createShapeLayer(comp, shapeType, width, height, fillColor, strokeColor
         }
     }
     
-    // Position - kompozisyon merkezine
-    shapeLayer.property("ADBE Transform Group").property("ADBE Position").setValue([comp.width / 2, comp.height / 2]);
+    // Position - kompozisyon merkezine (grid override eder)
+    shapeLayer.property("Position").setValue([comp.width / 2, comp.height / 2]);
     
     return shapeLayer;
 }
