@@ -239,6 +239,22 @@ function duplicateShapes() {
     callAE('duplicate', params);
 }
 
+// --- Gradient Uygula ---
+function applyGradientToSelected() {
+    var params = {
+        color1: document.getElementById('gradColor1').value,
+        color2: document.getElementById('gradColor2').value,
+        gradType: document.getElementById('gradType').value,
+        angle: parseInt(document.getElementById('gradAngle').value) || 135
+    };
+    setStatus('🌈 Gradient uygulanıyor...');
+    callAE('applyGradient', params, function(res) {
+        if (res && res.success) {
+            setStatus('✅ ' + res.message, 'success');
+        }
+    });
+}
+
 // --- Rastgele Renk ---
 function randomizeColorsBtn() {
     setStatus('🎨 Renkler değiştiriliyor...');

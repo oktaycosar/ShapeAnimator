@@ -232,6 +232,36 @@
                 <button class="btn" onclick="duplicateShapes()">📋 Çoğalt (x3)</button>
                 <button class="btn" onclick="randomizeColorsBtn()">🎨 Rastgele Renk</button>
             </div>
+            <!-- Gradient -->
+            <div class="row">
+                <label>🌈 Gradient (Seçili layer'lara)</label>
+            </div>
+            <div class="row cols-2">
+                <div>
+                    <label>Renk 1</label>
+                    <input type="color" id="gradColor1" value="#4A90D9">
+                </div>
+                <div>
+                    <label>Renk 2</label>
+                    <input type="color" id="gradColor2" value="#1A3A5C">
+                </div>
+            </div>
+            <div class="row cols-2">
+                <div>
+                    <label>Tip</label>
+                    <select id="gradType">
+                        <option value="linear" selected>📏 Linear</option>
+                        <option value="radial">🔵 Radial</option>
+                    </select>
+                </div>
+                <div>
+                    <label>Açı</label>
+                    <input type="number" id="gradAngle" value="135" min="0" max="360">
+                </div>
+            </div>
+            <button class="btn btn-accent" onclick="applyGradientToSelected()">
+                🌈 Gradient Uygula
+            </button>
             <!-- Sıralama -->
             <div class="row">
                 <label>🔺🔻 Sıralama (seçili layer)</label>

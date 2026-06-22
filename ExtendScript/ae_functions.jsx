@@ -924,6 +924,93 @@ function clearAllShapes() {
     return JSON.stringify({ success: true, removed: removed });
 }
 
+// --- Gradient Uygulama (Gradient Ramp - her shape'e kendi konumunda) ---
+
+function applyGradientToShapes(params) {
+    var comp = getActiveComp();
+    if (!comp) return JSON.stringify({ error: "Kompozisyon seçin!" });
+    
+    params = JSON.parse(params);
+    var color1 = hexToRGB(params.color1 || "#4A90D9");
+    var color2 = hexToRGB(params.color2 || "#1A3A5C");
+    var gradType = params.gradType || "linear";
+    
+    var sel = comp.selectedLayers;
+    var layers = [];
+    if (sel.length > 0) {
+        for (var k = 0; k < sel.length; k++) {
+            var sl = sel[k];
+            if (sl.name.indexOf("Shape_") === 0 || sl.name.indexOf("Shape ") === 0) {
+                layers.push(sl);
+            }
+        }
+    } else {
+        for (var i = 1; i <= comp.numLayers; i++) {
+            var l = comp.layer(i);
+            if (l.name.indexOf("Shape_") === 0) layers.push(l);
+        }
+    }
+    
+    if (layers.length === 0) {
+        return JSON.stringify({ error: "Shape layer'ı bulunamadı!" });
+    }
+    
+    app.beginUndoGroup("Shape Animator - Gradient");
+    var changed = 0;
+    
+    for (var j = 0; j < layers.length; j++) {
+        var layer = layers[j];
+        try {
+            var pos = layer.property("Position").value;
+            var shapeW = estimateShapeSize(layer, comp);
+            if (!shapeW || shapeW < 10 || shapeW > comp.width) shapeW = 150;
+            var halfW = Math.min(shapeW / 2, 200); // max 200px yarıçap
+            
+            var fxList = layer.property("Effects");
+            
+            // Eski gradient efektlerini temizle
+            for (var e = fxList.numProperties; e >= 1; e--) {
+                var en = "";
+                try { en = fxList.property(e).name; } catch (er) {}
+                if (en.indexOf("Gradient") >= 0 || en.indexOf("Ramp") >= 0) {
+                    try { fxList.property(e).remove(); } catch (re) {}
+                }
+            }
+            
+            // Gradient Ramp ekle - hem isim hem match name dene
+            var fx = null;
+            try { fx = fxList.addProperty("Gradient Ramp"); } catch (ea) {}
+            if (!fx) try { fx = fxList.addProperty("ADBE Gradient Ramp"); } catch (eb) {}
+            if (!fx) continue;
+            
+            // TÜM property'lere isimle ve index'le yaz
+            setFxProp(fx, "Ramp Type", 1, gradType === "radial" ? 2 : 1);
+            setFxProp(fx, "Start Color", 2, color1);
+            setFxProp(fx, "End Color", 3, color2);
+            setFxProp(fx, "Start of Ramp", 4, [pos[0] - halfW, pos[1]]);
+            setFxProp(fx, "End of Ramp", 5, [pos[0] + halfW, pos[1]]);
+            setFxProp(fx, "Blend With Original", 7, 0);
+            setFxProp(fx, "Opacity", 8, 100);
+            
+            changed++;
+        } catch (le) {}
+    }
+    
+    app.endUndoGroup();
+    
+    return JSON.stringify({
+        success: true,
+        changed: changed,
+        message: changed + " shape'e gradient uygulandı!"
+    });
+}
+
+// Efekt property'sine hem isimle hem index'le yaz
+function setFxProp(fx, propName, propIdx, value) {
+    try { fx.property(propName).setValue(value); return; } catch (e) {}
+    try { fx.property(propIdx).setValue(value); return; } catch (e) {}
+}
+
 // --- Rastgele Renk ---
 
 function randomizeColors() {
@@ -1118,6 +1205,8 @@ function main(command, params) {
                 return bulkyScatter(params);
             case "clearAll":
                 return clearAllShapes();
+            case "applyGradient":
+                return applyGradientToShapes(params);
             case "randomizeColors":
                 return randomizeColors();
             case "groupSelected":
