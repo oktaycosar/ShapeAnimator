@@ -650,7 +650,11 @@ function autoNumber(params) {
         
         // NUMARA + SHAPE GRUPLAMA (Parent-Child)
         if (groupWithShape) {
-            // Parent yapınca pozisyon relative olur - shape'in merkezine [0, offsetY]
+            // Parent: [0,0] = shape'in tam merkezi. Anchor'ı ortalayıp görünür yap
+            var numStr = num.toString();
+            var anchorX = numStr.length * calcFontSize * 0.32;  // metin genişliğinin yarısı
+            var anchorY = -calcFontSize * 0.35;                  // baseline'dan yukarı
+            textLayer.property("Anchor Point").setValue([-anchorX, anchorY]);
             textLayer.property("Position").setValue([0, offsetY]);
             textLayer.parent = shape;
         } else {
@@ -661,7 +665,6 @@ function autoNumber(params) {
         try {
             var textProp = textLayer.property("ADBE Text Properties").property("ADBE Text Document");
             var textDoc = textProp.value;
-            try { textDoc.resetCharStyle(); } catch (rs) {}
             textDoc.fontSize = calcFontSize;
             textDoc.fillColor = textRgb;
             textDoc.justification = ParagraphJustification.CENTER_JUSTIFIED;
