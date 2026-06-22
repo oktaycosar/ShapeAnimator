@@ -653,8 +653,8 @@ function autoNumber(params) {
             // Parent: [0,0] = shape'in tam merkezi. Anchor'ı ortalayıp görünür yap
             var numStr = num.toString();
             var anchorX = numStr.length * calcFontSize * 0.32;  // metin genişliğinin yarısı
-            var anchorY = -calcFontSize * 0.35;                  // baseline'dan yukarı
-            textLayer.property("Anchor Point").setValue([-anchorX, anchorY]);
+            var anchorY = -calcFontSize * 0.45;                  // baseline'dan yukarı (merkez)
+            textLayer.property("Anchor Point").setValue([anchorX, anchorY]);
             textLayer.property("Position").setValue([0, offsetY]);
             textLayer.parent = shape;
         } else {
