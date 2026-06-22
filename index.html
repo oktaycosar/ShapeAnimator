@@ -146,8 +146,8 @@
                 </div>
                 <div class="row">
                     <label>Açı</label>
-                    <input type="range" id="gradientAngle" min="0" max="360" value="0">
-                    <span class="range-val" id="gradientAngleVal">0°</span>
+                    <input type="range" id="gradientAngle" min="0" max="360" value="135">
+                    <span class="range-val" id="gradientAngleVal">135°</span>
                 </div>
             </div>
 
@@ -163,6 +163,14 @@
                     <span class="color-chip" style="background:#1ABC9C" onclick="setColor('#1ABC9C')" title="Turkuaz"></span>
                     <span class="color-chip" style="background:#E91E63" onclick="setColor('#E91E63')" title="Pembe"></span>
                     <span class="color-chip" style="background:#FF9800" onclick="setColor('#FF9800')" title="Amber"></span>
+                </div>
+            </div>
+            <div class="row">
+                <label>🎨 3D Grad.</label>
+                <div class="color-palette">
+                    <span class="gradient-chip" onclick="setGradientPreset('blue-white')" title="Mavi-Beyaz 3D" style="background:linear-gradient(135deg, #3498DB, #FFFFFF);"></span>
+                    <span class="gradient-chip" onclick="setGradientPreset('red-white')" title="Kırmızı-Beyaz 3D" style="background:linear-gradient(135deg, #E74C3C, #FFFFFF);"></span>
+                    <span class="gradient-chip" onclick="setGradientPreset('green-white')" title="Yeşil-Beyaz 3D" style="background:linear-gradient(135deg, #2ECC71, #FFFFFF);"></span>
                 </div>
             </div>
 

@@ -279,6 +279,22 @@ label:has(input[type="checkbox"]) {
     box-shadow: 0 0 8px rgba(255,255,255,0.3);
 }
 
+.gradient-chip {
+    width: 36px;
+    height: 28px;
+    border-radius: 6px;
+    cursor: pointer;
+    border: 2px solid rgba(255,255,255,0.25);
+    transition: all 0.15s;
+    display: inline-block;
+}
+
+.gradient-chip:hover {
+    border-color: #fff;
+    transform: scale(1.15);
+    box-shadow: 0 0 8px rgba(255,255,255,0.3);
+}
+
 /* Small Buttons (4-column layout) */
 .cols-4 {
     display: grid;

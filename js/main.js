@@ -205,6 +205,41 @@ function autoNumber() {
     callAE('autoNumber', { fontSize: fontSize, textColor: textColor, groupWithShape: groupWithShape });
 }
 
+// --- Hazır Gradient Presetleri ---
+function setGradientPreset(preset) {
+    var gradCheck = document.getElementById('useGradient');
+    var gradType = document.getElementById('gradientType');
+    var gradColor1 = document.getElementById('gradientColor1');
+    var gradColor2 = document.getElementById('gradientColor2');
+    var gradAngle = document.getElementById('gradientAngle');
+    var gradAngleVal = document.getElementById('gradientAngleVal');
+    var gradOpts = document.getElementById('gradientOpts');
+    
+    gradCheck.checked = true;
+    gradOpts.style.display = 'block';
+    gradType.value = 'linear';
+    gradAngle.value = 135;
+    gradAngleVal.textContent = '135°';
+    
+    switch(preset) {
+        case 'blue-white':
+            gradColor1.value = '#3498DB';
+            gradColor2.value = '#FFFFFF';
+            setStatus('💧 Mavi-Beyaz 3D gradient seçildi', '');
+            break;
+        case 'red-white':
+            gradColor1.value = '#E74C3C';
+            gradColor2.value = '#FFFFFF';
+            setStatus('🔥 Kırmızı-Beyaz 3D gradient seçildi', '');
+            break;
+        case 'green-white':
+            gradColor1.value = '#2ECC71';
+            gradColor2.value = '#FFFFFF';
+            setStatus('🍀 Yeşil-Beyaz 3D gradient seçildi', '');
+            break;
+    }
+}
+
 // --- Temizle ---
 function clearAllShapes() {
     if (confirm('Tüm shape layer\'ları silmek istediğine emin misin?')) {
