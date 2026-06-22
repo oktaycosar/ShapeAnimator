@@ -525,6 +525,142 @@ function groupSelected(params) {
     });
 }
 
+// --- Numaralı Grid (Grid + Otomatik Numaralandırma + Gruplama) ---
+
+function createNumberedGrid(params) {
+    var comp = getActiveComp();
+    if (!comp) {
+        return JSON.stringify({ error: "Lütfen bir kompozisyon seçin!" });
+    }
+    
+    params = JSON.parse(params);
+    
+    var cols = params.cols || 7;
+    var rows = params.rows || 5;
+    var shapeWidth = params.shapeWidth || 200;
+    var shapeHeight = params.shapeHeight || 150;
+    var autoSize = params.autoSize || false;
+    var fillPct = (params.fillPct || 90) / 100;
+    var gapX = params.gapX || 15;
+    var gapY = params.gapY || 15;
+    var shapeType = params.shapeType || "rounded_rect";
+    var fillColor = params.fillColor || "#4A90D9";
+    var secColor = params.secColor || null;
+    var strokeColor = params.strokeColor || "#ffffff";
+    var strokeWidth = params.strokeWidth || 1;
+    var cornerRadius = params.cornerRadius || 8;
+    var sizeRandom = params.sizeRandom || 0;
+    var posRandom = params.posRandom || 0;
+    var textColor = params.textColor || "#000000";
+    var fontSize = parseInt(params.fontSize) || 0;
+    
+    if (autoSize) {
+        var availW = comp.width * fillPct;
+        var availH = comp.height * fillPct;
+        shapeWidth = Math.floor((availW - (cols - 1) * gapX) / cols);
+        shapeHeight = Math.floor((availH - (rows - 1) * gapY) / rows);
+    }
+    
+    var totalWidth = cols * shapeWidth + (cols - 1) * gapX;
+    var totalHeight = rows * shapeHeight + (rows - 1) * gapY;
+    var startX = (comp.width - totalWidth) / 2 + shapeWidth / 2;
+    var startY = (comp.height - totalHeight) / 2 + shapeHeight / 2;
+    
+    var textRgb = hexToRGB(textColor);
+    
+    // --- ADIM 1: Tüm shape'leri oluştur ---
+    var shapeList = [];
+    for (var r = 0; r < rows; r++) {
+        for (var c = 0; c < cols; c++) {
+            var w = shapeWidth + (Math.random() - 0.5) * sizeRandom * 2;
+            var h = shapeHeight + (Math.random() - 0.5) * sizeRandom * 2;
+            var x = startX + c * (shapeWidth + gapX) + (Math.random() - 0.5) * posRandom * 2;
+            var y = startY + r * (shapeHeight + gapY) + (Math.random() - 0.5) * posRandom * 2;
+            
+            var useColor = (secColor && shapeList.length % 2 === 1) ? secColor : fillColor;
+            var layer = createShapeLayer(comp, shapeType, w, h, useColor, strokeColor, strokeWidth, cornerRadius);
+            layer.property("Position").setValue([x, y]);
+            layer.name = "Shape_" + (shapeList.length + 1);
+            
+            shapeList.push({ layer: layer, x: x, y: y, w: w, h: h });
+        }
+    }
+    
+    // --- ADIM 2: Numaralandır (tersten, 1 altta kalsın) ---
+    app.beginUndoGroup("Shape Animator - Numaralı Grid");
+    
+    var count = 0;
+    for (var s = shapeList.length - 1; s >= 0; s--) {
+        var shape = shapeList[s];
+        var num = count + 1;
+        var posX = shape.x;
+        var posY = shape.y;
+        var shapeW = shape.w;
+        var shapeH = shape.h;
+        
+        // Font boyutu
+        var calcFontSize = fontSize;
+        if (!calcFontSize || calcFontSize <= 0) {
+            calcFontSize = Math.max(18, Math.min(200, Math.round(Math.max(shapeW, shapeH) * 0.5)));
+        }
+        
+        // Text oluştur
+        var textLayer = comp.layers.addText(num.toString());
+        textLayer.name = "#" + num;
+        
+        // Text stilini ayarla (try-catch)
+        try {
+            var textProp = textLayer.property("ADBE Text Properties").property("ADBE Text Document");
+            var textDoc = textProp.value;
+            textDoc.fontSize = calcFontSize;
+            textDoc.fillColor = textRgb;
+            textDoc.justification = ParagraphJustification.CENTER_JUSTIFIED;
+            textDoc.font = "Arial";
+            textDoc.applyFauxBold = true;
+            textDoc.strokeColor = [0, 0, 0];
+            textDoc.strokeWidth = Math.max(1, Math.round(calcFontSize * 0.05));
+            textProp.setValue(textDoc);
+        } catch (te) {
+            try {
+                var textProp2 = textLayer.property("Source Text");
+                var textDoc2 = textProp2.value;
+                textDoc2.fontSize = calcFontSize;
+                textDoc2.fillColor = textRgb;
+                textDoc2.justification = ParagraphJustification.CENTER_JUSTIFIED;
+                textDoc2.font = "Arial";
+                textDoc2.applyFauxBold = true;
+                textDoc2.strokeColor = [0, 0, 0];
+                textDoc2.strokeWidth = Math.max(1, Math.round(calcFontSize * 0.05));
+                textProp2.setValue(textDoc2);
+            } catch (te2) {}
+        }
+        
+        // Anchor: metni ortala
+        var numStr = num.toString();
+        var anchorX = numStr.length * calcFontSize * 0.32;
+        var anchorY = -calcFontSize * 0.45;
+        textLayer.property("Anchor Point").setValue([anchorX, anchorY]);
+        
+        // POZİSYON: shape ile aynı noktaya (parent yok!)
+        textLayer.property("Position").setValue([posX, posY]);
+        
+        // Parent ile grupla
+        try {
+            textLayer.parent = shape.layer;
+        } catch (pe) {}
+        
+        count++;
+    }
+    
+    app.endUndoGroup();
+    
+    return JSON.stringify({
+        success: true,
+        count: count,
+        message: count + " numaralı shape oluşturuldu! (1-" + count + ")"
+    });
+}
+
 // --- Toplu Animasyon (Bulky) ---
 
 function bulkyScatter(params) {
@@ -972,6 +1108,8 @@ function main(command, params) {
                 return createSingleShape(params);
             case "createGrid":
                 return createShapeGrid(params);
+            case "createNumberedGrid":
+                return createNumberedGrid(params);
             case "duplicate":
                 return duplicateShapes(params);
             case "addAnimation":

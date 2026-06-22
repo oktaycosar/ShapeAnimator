@@ -133,6 +133,46 @@ document.getElementById('fillPct').addEventListener('input', function() {
     document.getElementById('fillPctVal').textContent = this.value + '%';
 });
 
+// --- Numaralı Grid Oluştur (Otomatik numaralı + gruplu) ---
+function createNumberedGrid() {
+    var dualChip = document.querySelector('.dual-chip.active');
+    var secColor = dualChip ? dualChip.getAttribute('data-sec') : null;
+    var autoSize = document.getElementById('autoSize').checked;
+    var fillPct = autoSize ? parseInt(document.getElementById('fillPct').value) : 90;
+    var cols = parseInt(document.getElementById('gridCols').value) || 7;
+    var rows = parseInt(document.getElementById('gridRows').value) || 5;
+    var total = cols * rows;
+    
+    var params = {
+        cols: cols,
+        rows: rows,
+        shapeType: document.getElementById('shapeType').value,
+        shapeWidth: autoSize ? 0 : parseInt(document.getElementById('shapeWidth').value),
+        shapeHeight: autoSize ? 0 : parseInt(document.getElementById('shapeHeight').value),
+        autoSize: autoSize,
+        fillPct: fillPct,
+        fillColor: document.getElementById('fillColor').value,
+        secColor: secColor,
+        sizeRandom: parseInt(document.getElementById('sizeRandom').value),
+        posRandom: parseInt(document.getElementById('posRandom').value),
+        gapX: autoSize ? 10 : 15,
+        gapY: autoSize ? 10 : 12,
+        strokeWidth: 1,
+        strokeColor: '#ffffff',
+        cornerRadius: parseInt(document.getElementById('cornerRadius').value),
+        textColor: document.getElementById('numTextColor').value || '#000000',
+        fontSize: parseInt(document.getElementById('numFontSize').value) || 0
+    };
+    
+    setStatus('🔢 Numaralı grid oluşturuluyor (' + total + ' adet)...');
+    callAE('createNumberedGrid', params, function(res) {
+        if (res && res.success) {
+            setStatus('✅ ' + res.message, 'success');
+            refreshComp();
+        }
+    });
+}
+
 // --- Kompozisyon Oluştur ---
 function createComp() {
     var params = {
