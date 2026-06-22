@@ -591,7 +591,7 @@ function autoNumber(params) {
     
     params = params ? JSON.parse(params) : {};
     var fontSize = parseInt(params.fontSize) || 0;   // 0 = otomatik (shape boyutunun %60'ı)
-    var textColor = params.textColor || "#FFFFFF";
+    var textColor = params.textColor || "#000000";
     var offsetY = params.offsetY || 0;               // 0 = tam merkez
     var groupWithShape = params.groupWithShape !== undefined ? params.groupWithShape : true; // varsayılan: grupla
     
@@ -666,6 +666,9 @@ function autoNumber(params) {
             textDoc.fillColor = textRgb;
             textDoc.justification = ParagraphJustification.CENTER_JUSTIFIED;
             textDoc.font = "Arial-BoldMT";
+            // Görünürlük için ince siyah outline
+            textDoc.strokeColor = [0, 0, 0];
+            textDoc.strokeWidth = Math.max(1, Math.round(calcFontSize * 0.05));
             textProp.setValue(textDoc);
         } catch (te) {
             // Fallback: Source Text ile dene
@@ -676,6 +679,8 @@ function autoNumber(params) {
                 textDoc2.fillColor = textRgb;
                 textDoc2.justification = ParagraphJustification.CENTER_JUSTIFIED;
                 textDoc2.font = "Arial-BoldMT";
+                textDoc2.strokeColor = [0, 0, 0];
+                textDoc2.strokeWidth = Math.max(1, Math.round(calcFontSize * 0.05));
                 textProp2.setValue(textDoc2);
             } catch (te2) {}
         }
@@ -683,6 +688,9 @@ function autoNumber(params) {
         // Opacity animasyonu
         textLayer.property("Opacity").setValueAtTime(comp.time, 0);
         textLayer.property("Opacity").setValueAtTime(comp.time + count * 0.03 + 0.1, 100);
+        
+        // Text layer'ı en üste taşı (görünür olsun)
+        textLayer.moveToBeginning();
         
         count++;
     }
