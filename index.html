@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Shape Animator</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="panel-header">
+        <h1>🎬 Shape Animator</h1>
+        <p>PowerPoint tarzı shape animasyonları</p>
+        <div id="compInfo" class="comp-info">Kompozisyon: --</div>
+    </div>
+
+    <div class="panel-body">
+        <!-- Kompozisyon Oluştur -->
+        <div class="section">
+            <h2>📐 Kompozisyon Oluştur</h2>
+            <div class="row">
+                <label>İsim</label>
+                <input type="text" id="compName" value="Shape_Anim">
+            </div>
+            <div class="row cols-2">
+                <div>
+                    <label>Genişlik</label>
+                    <input type="number" id="compWidth" value="1920" min="100" max="7680">
+                </div>
+                <div>
+                    <label>Yükseklik</label>
+                    <input type="number" id="compHeight" value="1080" min="100" max="4320">
+                </div>
+            </div>
+            <div class="row cols-2">
+                <div>
+                    <label>FPS</label>
+                    <input type="number" id="compFPS" value="30" min="1" max="120">
+                </div>
+                <div>
+                    <label>Süre (sn)</label>
+                    <input type="number" id="compDuration" value="10" min="1" max="600">
+                </div>
+            </div>
+            <button class="btn btn-primary" onclick="createComp()">
+                🎬 Kompozisyon Oluştur
+            </button>
+        </div>
+
+        <!-- Hızlı Presetler -->
+        <div class="section">
+            <h2>⚡ Hızlı Presetler</h2>
+            <button class="btn preset-btn" onclick="runPreset('scatter35')">
+                💥 35 Kutu Dağılsın
+            </button>
+            <button class="btn preset-btn" onclick="runPreset('fade20')">
+                🌫️ 20 Kutu Fade-In
+            </button>
+            <button class="btn preset-btn" onclick="runPreset('grid12')">
+                📐 12'li Grid (Slide)
+            </button>
+            <button class="btn preset-btn" onclick="runPreset('bounce16')">
+                🎾 16 Kutu Bounce
+            </button>
+        </div>
+
+        <!-- Shape Oluşturma -->
+        <div class="section">
+            <h2>🔷 Shape Oluştur</h2>
+            <div class="row">
+                <label>Tip</label>
+                <select id="shapeType">
+                    <option value="rounded_rect" selected>Yuvarlak Kutu</option>
+                    <option value="rect">Dikdörtgen</option>
+                    <option value="ellipse">Elips / Daire</option>
+                    <option value="bezier">🔷 Bezier Path (Vektörel)</option>
+                    <option value="polygon">🔺 Poligon</option>
+                    <option value="star">⭐ Yıldız</option>
+                </select>
+            </div>
+            <div class="row cols-2">
+                <div>
+                    <label>Genişlik</label>
+                    <input type="number" id="shapeWidth" value="200" min="10" max="500">
+                </div>
+                <div>
+                    <label>Yükseklik</label>
+                    <input type="number" id="shapeHeight" value="150" min="10" max="500">
+                </div>
+            </div>
+            <div class="row cols-2">
+                <div>
+                    <label>Kolon</label>
+                    <input type="number" id="gridCols" value="7" min="1" max="20">
+                </div>
+                <div>
+                    <label>Satır</label>
+                    <input type="number" id="gridRows" value="5" min="1" max="20">
+                </div>
+            </div>
+            <div class="row cols-2">
+                <div>
+                    <label>Boyut Rastgele</label>
+                    <input type="range" id="sizeRandom" min="0" max="30" value="0">
+                    <span class="range-val" id="sizeRandomVal">0</span>
+                </div>
+                <div>
+                    <label>Pozisyon Rastgele</label>
+                    <input type="range" id="posRandom" min="0" max="20" value="0">
+                    <span class="range-val" id="posRandomVal">0</span>
+                </div>
+            </div>
+            <div class="row cols-2">
+                <div>
+                    <label>Renk</label>
+                    <input type="color" id="fillColor" value="#4A90D9">
+                </div>
+                <div>
+                    <label>Köşe Yumuşatma</label>
+                    <input type="range" id="cornerRadius" min="0" max="50" value="8">
+                    <span class="range-val" id="cornerRadiusVal">8</span>
+                </div>
+            </div>
+
+            <!-- Gradient -->
+            <div class="row">
+                <label>
+                    <input type="checkbox" id="useGradient"> Gradient Dolgu
+                </label>
+            </div>
+            <div id="gradientOpts" style="display:none;">
+                <div class="row">
+                    <label>Gradient Tipi</label>
+                    <select id="gradientType">
+                        <option value="linear">📏 Linear</option>
+                        <option value="radial">🔵 Radial</option>
+                    </select>
+                </div>
+                <div class="row cols-2">
+                    <div>
+                        <label>Renk 1</label>
+                        <input type="color" id="gradientColor1" value="#4A90D9">
+                    </div>
+                    <div>
+                        <label>Renk 2</label>
+                        <input type="color" id="gradientColor2" value="#1A365D">
+                    </div>
+                </div>
+                <div class="row">
+                    <label>Açı</label>
+                    <input type="range" id="gradientAngle" min="0" max="360" value="0">
+                    <span class="range-val" id="gradientAngleVal">0°</span>
+                </div>
+            </div>
+
+            <!-- Renk Paleti -->
+            <div class="row">
+                <label>Hızlı Renk</label>
+                <div class="color-palette">
+                    <span class="color-chip" style="background:#E74C3C" onclick="setColor('#E74C3C')" title="Kırmızı"></span>
+                    <span class="color-chip" style="background:#2ECC71" onclick="setColor('#2ECC71')" title="Yeşil"></span>
+                    <span class="color-chip" style="background:#3498DB" onclick="setColor('#3498DB')" title="Mavi"></span>
+                    <span class="color-chip" style="background:#F39C12" onclick="setColor('#F39C12')" title="Turuncu"></span>
+                    <span class="color-chip" style="background:#9B59B6" onclick="setColor('#9B59B6')" title="Mor"></span>
+                    <span class="color-chip" style="background:#1ABC9C" onclick="setColor('#1ABC9C')" title="Turkuaz"></span>
+                    <span class="color-chip" style="background:#E91E63" onclick="setColor('#E91E63')" title="Pembe"></span>
+                    <span class="color-chip" style="background:#FF9800" onclick="setColor('#FF9800')" title="Amber"></span>
+                </div>
+            </div>
+
+            <button class="btn btn-primary" onclick="createGrid()">
+                🎨 Grid Oluştur
+            </button>
+            <button class="btn btn-accent" onclick="createSingleShape()" style="margin-top:8px;">
+                ➕ Tek Shape Ekle
+            </button>
+        </div>
+
+        <!-- Animasyon -->
+        <div class="section">
+            <h2>🎯 Animasyon Ekle</h2>
+            <div class="row">
+                <label>Animasyon Tipi</label>
+                <select id="animType">
+                    <option value="scatter" selected>💥 Dağılarak Gelme</option>
+                    <option value="fade_in">🌫️ Fade In</option>
+                    <option value="slide_from_left">⬅️ Soldan Kayma</option>
+                    <option value="slide_from_right">➡️ Sağdan Kayma</option>
+                    <option value="slide_from_top">⬆️ Üstten Kayma</option>
+                    <option value="slide_from_bottom">⬇️ Alttan Kayma</option>
+                    <option value="scale_up">📈 Scale Up</option>
+                    <option value="scale_bounce">🎾 Scale Bounce</option>
+                    <option value="rotate_in">🔄 Rotate In</option>
+                </select>
+            </div>
+            <div class="row cols-2">
+                <div>
+                    <label>Süre (sn)</label>
+                    <input type="number" id="animDuration" value="0.5" min="0.1" max="5" step="0.1">
+                </div>
+                <div>
+                    <label>Stagger (sn)</label>
+                    <input type="number" id="animStagger" value="0.05" min="0" max="2" step="0.01">
+                </div>
+            </div>
+            <div class="row">
+                <label>Sıralama</label>
+                <select id="animDirection">
+                    <option value="forward">İleri</option>
+                    <option value="reverse">Ters</option>
+                    <option value="random">Rastgele</option>
+                </select>
+            </div>
+            <div class="row">
+                <label>
+                    <input type="checkbox" id="groupMode"> Sadece seçili layer'lar
+                </label>
+            </div>
+            <button class="btn btn-accent" onclick="addAnimation()">
+                🎬 Animasyonu Uygula
+            </button>
+        </div>
+
+        <!-- Düzenleme -->
+        <div class="section">
+            <h2>🔧 Düzenleme</h2>
+            <div class="row cols-3" style="align-items:end; gap:8px;">
+                <div>
+                    <label>Punto</label>
+                    <input type="number" id="numFontSize" value="0" min="0" max="300" style="width:60px;" title="0 = Otomatik">
+                </div>
+                <div>
+                    <label>Renk</label>
+                    <input type="color" id="numTextColor" value="#FFFFFF" style="width:40px; height:32px;">
+                </div>
+                <button class="btn btn-accent" onclick="autoNumber()">🔢 Numaralandır (1-N)</button>
+            </div>
+            <div class="row cols-2">
+                <button class="btn" onclick="duplicateShapes()">📋 Çoğalt (x3)</button>
+                <button class="btn" onclick="randomizeColorsBtn()">🎨 Rastgele Renk</button>
+            </div>
+            <!-- Sıralama -->
+            <div class="row">
+                <label>🔺🔻 Sıralama (seçili layer)</label>
+            </div>
+            <div class="row cols-4">
+                <button class="btn btn-sm" onclick="reorderLayers('front')" title="En Öne">⏫</button>
+                <button class="btn btn-sm" onclick="reorderLayers('up')" title="Bir Yukarı">🔼</button>
+                <button class="btn btn-sm" onclick="reorderLayers('down')" title="Bir Aşağı">🔽</button>
+                <button class="btn btn-sm" onclick="reorderLayers('back')" title="En Arkaya">⏬</button>
+            </div>
+            <!-- Gölge -->
+            <div class="row">
+                <label>🌑 Drop Shadow</label>
+            </div>
+            <div class="row cols-2">
+                <button class="btn" onclick="applyShadow('add')">➕ Gölge Ekle</button>
+                <button class="btn btn-danger" onclick="applyShadow('remove')">➖ Gölge Kaldır</button>
+            </div>
+            <div class="row cols-2">
+                <button class="btn btn-danger" onclick="clearAllShapes()">🗑️ Tümünü Sil</button>
+                <button class="btn" onclick="refreshComp()">🔄 Yenile</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="status" class="status-bar">Hazır ✨</div>
+
+    <script src="js/CSInterface.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>

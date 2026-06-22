@@ -1,0 +1,21 @@
+# Adobe CEP
+CSXS/.debug
+.debug
+
+# ZXP signed package (keep unsigned or use releases)
+*.zxp
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE
+.vscode/
+.idea/
+
+# Node
+node_modules/
+
+# Build artifacts
+*.log
